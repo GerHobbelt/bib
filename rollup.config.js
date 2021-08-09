@@ -27,7 +27,7 @@ const config = {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
 		}),
 		babel({
-			include: ['src/*.js'],
+			include: ['src/**/*.js'],
 			extensions: ['.js'],
 			babelHelpers: 'runtime'
 		}),
