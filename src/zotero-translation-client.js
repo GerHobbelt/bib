@@ -1,9 +1,8 @@
 import dateToSql from './zotero-shim/date-to-sql.js';
 import defaults from './defaults.js';
 import itemToCSLJSON from './zotero-shim/item-to-csl-json.js';
-import { isLikeZoteroItem } from './utils.js';
+import { isLikeZoteroItem, mergeFetchOptions } from './utils.js';
 const [ COMPLETE, MULTIPLE_CHOICES, FAILED ] = [ 'COMPLETE', 'MULTIPLE_CHOICES', 'FAILED' ];
-
 class ZoteroTranslationClient {
 	constructor(opts) {
 		this.opts = {
@@ -89,16 +88,15 @@ class ZoteroTranslationClient {
 		return this.items;
 	}
 
-	async exportItems(format) {
+	async exportItems(format, opts = {}) {
 		let translateURL = `${this.opts.translateURL}/${this.opts.translatePrefix}export?format=${format}`;
-		let fetchOptions = {
+		let fetchOptions = mergeFetchOptions({
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(this.items.filter(i => 'key' in i )),
-			...this.opts.init
-		}
+		}, this.opts, opts);
 		const response = await fetch(translateURL, fetchOptions);
 		if(response.ok) {
 			return await response.text();
@@ -109,14 +107,14 @@ class ZoteroTranslationClient {
 
 	async translateIdentifier(identifier, { endpoint = '/search', ...opts } = {}) {
 		let translateURL = `${this.opts.translateURL}${this.opts.translatePrefix}${endpoint}`;
-		let init = {
+
+		let init = mergeFetchOptions({
 			method: 'POST',
 			headers: {
-				'Content-Type': 'text/plain'
+				'Content-Type': 'text/plain',
 			},
 			body: identifier,
-			...this.opts.init
-		};
+		}, this.opts, opts);
 
 		return await this.translate(translateURL, init, opts);
 	}
@@ -125,14 +123,13 @@ class ZoteroTranslationClient {
 		let translateURL = `${this.opts.translateURL}${this.opts.translatePrefix}${endpoint}`;
 		let data = { url, items, session: this.session, ...this.opts.request };
 
-		let init = {
+		let init = mergeFetchOptions({
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(data),
-			...this.opts.init
-		};
+		}, this.opts, opts);
 
 		return await this.translate(translateURL, init, opts);
 	}
@@ -140,14 +137,13 @@ class ZoteroTranslationClient {
 	async translateUrl(url, { endpoint = '/web', ...opts } = {}) {
 		let translateURL = `${this.opts.translateURL}${this.opts.translatePrefix}${endpoint}`;
 
-		let init = {
+		let init = mergeFetchOptions({
 			method: 'POST',
 			headers: {
-				'Content-Type': 'text/plain'
+				'Content-Type': 'text/plain',
 			},
 			body: url,
-			...this.opts.init
-		};
+		}, this.opts, opts);
 
 		return await this.translate(translateURL, init, opts);
 	}

@@ -608,4 +608,58 @@ describe('Zotero Translation Client', () => {
 		assert.equal(JSON.parse(fakeStore.storage['zotero-bib-items']).length, 1);
 		assert.deepInclude(bib.itemsRaw[0], zoteroItemPaper);
 	});
+
+	it('should accept fetch config via global opts', async () => {
+		let bib = new ZoteroTranslationClient({
+			persist: false,
+			init: { cache: 'no-cache', headers: { 'X-Custom-Header': 42 } }
+		});
+
+		await bib.translateIdentifier('123');
+		assert.equal(fetchRequests.length, 1);
+		assert.equal(fetchRequests[0].url, '/search');
+		assert.equal(fetchRequests[0].opts.cache, 'no-cache');
+		assert.equal(fetchRequests[0].opts.headers['Content-Type'], 'text/plain');
+		assert.equal(fetchRequests[0].opts.headers['X-Custom-Header'], 42);
+	});
+
+	it('should accept fetch config via local opts', async () => {
+		let bib = new ZoteroTranslationClient({
+			persist: false
+		});
+
+		await bib.translateIdentifier('123', { init: { cache: 'no-cache', headers: { 'X-Custom-Header': 42 } }});
+		assert.equal(fetchRequests.length, 1);
+		assert.equal(fetchRequests[0].url, '/search');
+		assert.equal(fetchRequests[0].opts.cache, 'no-cache');
+		assert.equal(fetchRequests[0].opts.headers['Content-Type'], 'text/plain');
+		assert.equal(fetchRequests[0].opts.headers['X-Custom-Header'], 42);
+	});
+
+	it('should override fetch global config via local opts', async () => {
+		let bib = new ZoteroTranslationClient({
+			persist: false,
+			init: { cache: 'no-cache', headers: { 'X-Custom-Header': 42 } }
+		});
+
+		await bib.translateIdentifier('123', { init: { cache: 'default' }});
+		assert.equal(fetchRequests.length, 1);
+		assert.equal(fetchRequests[0].url, '/search');
+		assert.equal(fetchRequests[0].opts.cache, 'default');
+		assert.equal(fetchRequests[0].opts.headers['Content-Type'], 'text/plain');
+		assert.equal(fetchRequests[0].opts.headers['X-Custom-Header'], 42);
+	});
+
+	it('should merge fetch headers from global and local opts', async () => {
+		let bib = new ZoteroTranslationClient({
+			persist: false,
+			init: { cache: 'no-cache', headers: { 'X-A': 1, 'X-B': 2  } }
+		});
+		await bib.translateIdentifier('123', { init: { headers: { 'X-A': 42, 'X-C': 3 }}});
+		assert.equal(fetchRequests.length, 1);
+		assert.equal(fetchRequests[0].url, '/search');
+		assert.equal(fetchRequests[0].opts.headers['X-A'], 42);
+		assert.equal(fetchRequests[0].opts.headers['X-B'], 2);
+		assert.equal(fetchRequests[0].opts.headers['X-C'], 3);
+	});
 });
