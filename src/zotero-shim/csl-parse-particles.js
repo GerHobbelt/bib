@@ -70,7 +70,7 @@ function splitParticles(nameValue, firstNameFlag, caseOverride) {
 function trimLast(str) {
 	var lastChar = str.slice(-1);
 	str = str.trim();
-	if (lastChar === " " && ["\'", "\u2019"].indexOf(str.slice(-1)) > -1) {
+	if (lastChar === " " && ["'", "\u2019"].indexOf(str.slice(-1)) > -1) {
 		str += " ";
 	}
 	return str;
@@ -120,4 +120,4 @@ export default function parseParticles(nameObj) {
 	if (droppingParticle) {
 		nameObj['dropping-particle'] = droppingParticle;
 	}
-};
+}

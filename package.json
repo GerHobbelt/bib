@@ -33,7 +33,8 @@
     "clean": "rimraf dist lib",
     "test": "c8 mocha --parallel",
     "coverage": "c8 --reporter=html --reporter=text mocha --parallel",
-    "start": "NODE_ENV=test mocha --watch"
+    "start": "NODE_ENV=test mocha --watch",
+    "lint": "eslint src/**/*.js test/*.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
@@ -43,7 +44,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
-    "@babel/eslint-parser": "^7.14.7",
+    "@babel/eslint-parser": "^7.15.0",
     "@babel/plugin-transform-runtime": "^7.14.5",
     "@babel/preset-env": "^7.14.7",
     "@rollup/plugin-babel": "^5.3.0",
