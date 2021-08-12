@@ -148,6 +148,19 @@ class ZoteroTranslationClient {
 		return await this.translate(translateURL, init, opts);
 	}
 
+	async translateImport(data, { endpoint = '/import', ...opts } = {}) {
+		let translateURL = `${this.opts.translateURL}${this.opts.translatePrefix}${endpoint}`;
+		let init = mergeFetchOptions({
+			method: 'POST',
+			headers: {
+				'Content-Type': 'text/plain',
+			},
+			body: data,
+		}, this.opts, opts);
+
+		return await this.translate(translateURL, init, opts);
+	}
+
 	async translate(url, fetchOptions, { add = true } = {}) {
 		const response = await fetch(url, fetchOptions);
 		var items, result, next = null;

@@ -128,7 +128,17 @@ describe('Zotero Translation Client', () => {
 				}
 			}
 		});
+
+		fetchMock.mock('/import', (data, opts) => {
+			fetchRequests.push({ data, opts });
+			return {
+				body: [zoteroItemBook],
+				headers: { 'Content-Type': 'application/json' }
+			};
+		});
+
 	});
+
 
 
 	it('should convert (Zotero -> CSL) initial items', () => {
@@ -661,5 +671,15 @@ describe('Zotero Translation Client', () => {
 		assert.equal(fetchRequests[0].opts.headers['X-A'], 42);
 		assert.equal(fetchRequests[0].opts.headers['X-B'], 2);
 		assert.equal(fetchRequests[0].opts.headers['X-C'], 3);
+	});
+
+	it('should use /import endpoint', async () => {
+		const bib = new ZoteroTranslationClient({ persist: false });
+		const body = 'lorem ipsum';
+
+		await bib.translateImport(body);
+		assert.equal(fetchRequests.length, 1);
+		assert.equal(fetchRequests[0].opts.body, body);
+		assert.equal(fetchRequests[0].opts.headers['Content-Type'], 'text/plain');
 	});
 });
