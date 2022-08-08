@@ -7,3 +7,4 @@ dist
 lib
 /demo
 .nyc_output
+data

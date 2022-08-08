@@ -1,6 +1,5 @@
-import dateToSql from './zotero-shim/date-to-sql.js';
 import defaults from './defaults.js';
-import itemToCSLJSON from './zotero-shim/item-to-csl-json.js';
+import Zotero from './zotero-shim.js';
 import { isLikeZoteroItem, mergeFetchOptions } from './utils.js';
 const [ COMPLETE, MULTIPLE_CHOICES, FAILED ] = [ 'COMPLETE', 'MULTIPLE_CHOICES', 'FAILED' ];
 class ZoteroTranslationClient {
@@ -81,7 +80,7 @@ class ZoteroTranslationClient {
 	}
 
 	get itemsCSL() {
-		return this.items.map(i => itemToCSLJSON(i))
+		return this.items.map(i => Zotero.Utilities.Item.itemToCSLJSON({ ...i, uri: i.key, }))
 	}
 
 	get itemsRaw() {
@@ -179,7 +178,7 @@ class ZoteroTranslationClient {
 				items.forEach(item => {
 					if(item.accessDate === 'CURRENT_TIMESTAMP') {
 						const dt = new Date(Date.now());
-						item.accessDate = dateToSql(dt, true);
+						item.accessDate = Zotero.Date.dateToSQL(dt, true);
 					}
 					if(add) {
 						this.addItem(item);

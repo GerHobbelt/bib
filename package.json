@@ -17,6 +17,7 @@
     ]
   },
   "files": [
+    "data/*",
     "src/**/*",
     "lib/**/*",
     "dist/**/*"
@@ -29,18 +30,19 @@
   "scripts": {
     "prepack": "npm run build",
     "postpack": "rimraf dist lib",
-    "build": "rollup -c",
+    "build": "run-p \"build:schema\" \"build:utilities\" && rollup -c",
     "clean": "rimraf dist lib",
-    "test": "c8 mocha --parallel",
-    "coverage": "c8 --reporter=html --reporter=text mocha --parallel",
-    "start": "NODE_ENV=test mocha --watch",
-    "lint": "eslint src/**/*.js test/*.js"
+    "test": "c8 -x modules/ -x test/ mocha --parallel",
+    "coverage": "c8 -x modules/ -x test/ --reporter=html --reporter=text mocha --parallel",
+    "start": "run-p \"build:schema\" \"build:utilities\" && NODE_ENV=test nodemon -w src -w data -w test -w modules --exec mocha",
+    "lint": "eslint src/**/*.js test/*.js",
+    "build:schema": "node scripts/process-schema.cjs",
+    "build:utilities": "node scripts/process-utilities.cjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
     "@babel/runtime-corejs3": "^7.18.9",
-    "cross-fetch": "^3.1.5",
-    "zotero-base-mappings": "0.0.2"
+    "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
@@ -55,7 +57,9 @@
     "chai": "^4.3.6",
     "eslint": "^8.20.0",
     "fetch-mock": "^9.11.0",
+    "fs-extra": "^10.1.0",
     "mocha": "^10.0.0",
+    "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup-plugin-filesize": "^9.1.2",

@@ -21,17 +21,19 @@ const config = {
 			preferBuiltins: false,
 			mainFields: ['browser', 'main']
 		}),
-		commonjs(),
 		replace({
 			preventAssignment: true,
-			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+			'Zotero.isNode': false,
+			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development')
 		}),
+		commonjs(),
 		babel({
 			include: ['src/**/*.js'],
 			extensions: ['.js'],
 			babelHelpers: 'runtime'
 		}),
 		filesize({ showMinifiedSize: false, showGzippedSize: !!process.env.DEBUG }),
+
 	]
 };
 
@@ -43,7 +45,7 @@ if(process.env.DEBUG) {
 export default [
 	{ ...config, input: 'src/main.js', output: { ...config.output, file: 'lib/main.cjs' } },
 	{ ...config, input: 'src/main-node.js', output: { ...config.output, file: 'lib/main-node.cjs' } },
-	{ ...config, 
+	{ ...config,
 		external: [],
 		input: 'src/main.js',
 		output: { ...config.output, compact: true, name: 'ZoteroTranslationClient', format: 'umd', file: 'dist/zotero-translation-client.js' },

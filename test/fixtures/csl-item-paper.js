@@ -1,4 +1,5 @@
 export default {
+	id: 'MTF25W26',
 	type: 'article-journal',
 	title: 'Et quis in exercitation tempor',
 	'container-title': 'Example',

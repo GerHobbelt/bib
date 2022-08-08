@@ -1,4 +1,5 @@
 export default {
+	id: 'PXZ5ISSF',
 	type: 'book',
 	title: 'Dune',
 	publisher: 'Hodder Paperbacks',

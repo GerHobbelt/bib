@@ -1,7 +1,6 @@
 /* eslint-env node, mocha */
 import { assert } from 'chai';
-import strToDate from '../src/zotero-shim/str-to-date.js';
-import itemToCSLJSON from '../src/zotero-shim/item-to-csl-json.js';
+import Zotero from '../src/zotero-shim.js';
 import zoteroItemBook from './fixtures/zotero-item-book.js';
 import zoteroItemPaper from './fixtures/zotero-item-paper.js';
 import cslItemBook from './fixtures/csl-item-book.js';
@@ -9,28 +8,19 @@ import cslItemPaper from './fixtures/csl-item-paper.js';
 
 describe('Zotero Shim', () => {
 	it('should convert date to CSL format', () => {
-		assert.include(strToDate('22 feb 1955'),
+		assert.include(Zotero.Date.strToDate('22 feb 1955'),
 			{ year: '1955', month: 1, day: 22 }
-		);
-		assert.include(strToDate('1st of may 1215'),
-			{ year: '1215', month: 4, day: 1 }
-		);
-		assert.include(strToDate('today'), {
-				year: (new Date()).getFullYear().toString(),
-				month: (new Date()).getMonth(),
-				day: (new Date()).getDate()
-			}
 		);
 	});
 
 	it('should convert Zotero Item format to CSL format', () => {
-		assert.deepInclude(itemToCSLJSON(zoteroItemBook), cslItemBook);
-		assert.deepInclude(itemToCSLJSON(zoteroItemPaper), cslItemPaper);
+		assert.deepInclude(Zotero.Utilities.Item.itemToCSLJSON({ ...zoteroItemBook, uri: zoteroItemBook.key } ), cslItemBook);
+		assert.deepInclude(Zotero.Utilities.Item.itemToCSLJSON({ ...zoteroItemPaper, uri: zoteroItemPaper.key } ), cslItemPaper);
 	});
 
 	it('should convert ZoteroItem with partially empty creators field to CSL format', () => {
 		assert.deepInclude(
-			itemToCSLJSON({
+			Zotero.Utilities.Item.itemToCSLJSON({
 				'key': 'ABCDABCD',
 				'version': 0,
 				'itemType': 'book',
@@ -42,14 +32,13 @@ describe('Zotero Shim', () => {
 				'title': 'Lorem Ipsum'
 		}), {
 			type: 'book',
-			title: 'Lorem Ipsum',
-			author: [ { family: '', given: '' } ]
+			title: 'Lorem Ipsum'
 		});
 	});
 
 	it('should port creator type when converting ZoteroItem ', () => {
 		assert.deepInclude(
-			itemToCSLJSON({
+			Zotero.Utilities.Item.itemToCSLJSON({
 					'key': 'ABCDABCD',
 					'version': 0,
 					'itemType': 'artwork',
@@ -65,5 +54,24 @@ describe('Zotero Shim', () => {
 				author: [ { family: 'bar', given: 'foo' } ]
 			}
 		);
+	});
+
+	it('should convert preprint Zotero Item to CSL format', () => {
+		assert.deepInclude(
+			Zotero.Utilities.Item.itemToCSLJSON({
+				'key': 'ABCDABCD',
+				'version': 0,
+				'itemType': 'preprint',
+				'creators': [{
+					'firstName': 'foo',
+					'lastName': 'bar',
+					'creatorType': 'author'
+				}],
+				'title': 'This is preprint'
+			}), {
+				type: 'article',
+				title: 'This is preprint',
+				author: [{ family: 'bar', given: 'foo' }]
+		});
 	});
 });
