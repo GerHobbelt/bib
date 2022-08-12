@@ -20,7 +20,9 @@
     "data/*",
     "src/**/*",
     "lib/**/*",
-    "dist/**/*"
+    "dist/**/*",
+		"modules/zotero-utilities/**/*.js",
+		"!modules/zotero-utilities/test/**/*"
   ],
   "config": {
     "port": "8001",
