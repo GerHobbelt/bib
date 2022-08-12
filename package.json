@@ -1,7 +1,7 @@
 {
   "name": "zotero-translation-client",
   "license": "AGPL-3.0",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "",
   "repository": "",
   "type": "module",
@@ -21,8 +21,8 @@
     "src/**/*",
     "lib/**/*",
     "dist/**/*",
-		"modules/zotero-utilities/**/*.js",
-		"!modules/zotero-utilities/test/**/*"
+    "modules/zotero-utilities/**/*.js",
+    "!modules/zotero-utilities/test/**/*"
   ],
   "config": {
     "port": "8001",
