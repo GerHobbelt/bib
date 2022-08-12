@@ -9,5 +9,6 @@ export default {
 	}],
 	'tags': [],
 	'title': 'Section of Lorem Ipsum',
-	'bookTitle': 'Lorem Ipsum'
+	'bookTitle': 'Lorem Ipsum',
+	'date': '01.Apr.2022'
 };

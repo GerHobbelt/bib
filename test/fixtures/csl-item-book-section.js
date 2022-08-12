@@ -3,5 +3,12 @@ export default {
 	type: 'chapter',
 	title: 'Section of Lorem Ipsum',
 	'container-title': 'Lorem Ipsum',
-	author: [ { family: 'Person', given: 'Happy' } ]
+	author: [ { family: 'Person', given: 'Happy' } ],
+	issued: { 'date-parts': [
+		[
+			"2022",
+			4,
+			1
+		]
+	] }
 };
