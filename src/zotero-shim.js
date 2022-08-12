@@ -8,7 +8,9 @@ import Utilities from '../modules/zotero-utilities/utilities.js';
 import dateFormats from '../data/dateFormats.js';
 import schemaJSON from '../data/zotero-schema.js';
 
-global.Zotero = {
+const g = globalThis;
+
+g.Zotero = {
 	debug: console.log,
 	Date: Utilities_Date,
 	Schema: { init: Schema.init },
@@ -19,15 +21,16 @@ global.Zotero = {
 	...CachedTypes
 };
 
-global.Zotero.locale = 'en-US';
-global.Zotero.Schema.init(schemaJSON);
-global.Zotero.setTypeSchema(ZOTERO_TYPE_SCHEMA);
-global.Zotero.Date.init(dateFormats);
+g.Zotero.locale = 'en-US';
+g.Zotero.Schema.init(schemaJSON);
+g.Zotero.setTypeSchema(ZOTERO_TYPE_SCHEMA);
+g.Zotero.Date.init(dateFormats);
 
-const collator = new Intl.Collator([global.Zotero.locale], {
+const collator = new Intl.Collator([g.Zotero.locale], {
 	numeric: true,
 	sensitivity: 'base'
 });
-global.Zotero.localeCompare = collator.compare;
 
-export default global.Zotero;
+g.Zotero.localeCompare = collator.compare;
+
+export default g.Zotero;
