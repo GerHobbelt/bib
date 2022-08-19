@@ -3,4 +3,4 @@
 	url = https://github.com/zotero/zotero-schema.git
 [submodule "modules/zotero-utilities"]
 	path = modules/zotero-utilities
-	url = https://github.com/tnajdek/zotero-utilities.git
+	url = https://github.com/zotero/utilities.git
